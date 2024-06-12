@@ -1,0 +1,518 @@
+{
+  "last_node_id": 72,
+  "last_link_id": 164,
+  "nodes": [
+    {
+      "id": 63,
+      "type": "Pops_Repo_Choice",
+      "pos": [
+        945,
+        536
+      ],
+      "size": {
+        "0": 315,
+        "1": 154
+      },
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "repo_id",
+          "type": "STRING",
+          "links": [
+            151
+          ],
+          "shape": 3,
+          "label": "repo_id",
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Pops_Repo_Choice"
+      },
+      "widgets_values": [
+        "kandinsky-community\\kandinsky-2-2-prior",
+        "",
+        "kandinsky-community\\kandinsky-2-2-decoder",
+        "",
+        "F:/test/ComfyUI/models/diffusers/pOpsPaper/operators"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "LoadImage",
+      "pos": [
+        492,
+        480
+      ],
+      "size": {
+        "0": 315,
+        "1": 314
+      },
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            126
+          ],
+          "shape": 3,
+          "label": "图像",
+          "slot_index": 0
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null,
+          "shape": 3,
+          "label": "遮罩"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "birmingham-museums-trust-q2OwlfXAYfo-unsplash (1).jpg",
+        "image"
+      ]
+    },
+    {
+      "id": 23,
+      "type": "Imgae_To_Path",
+      "pos": [
+        962,
+        789
+      ],
+      "size": {
+        "0": 292.20001220703125,
+        "1": 102
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 126,
+          "label": "image",
+          "slot_index": 0
+        },
+        {
+          "name": "image_operator",
+          "type": "IMAGE",
+          "link": 125,
+          "label": "image_operator"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "inputs_a",
+          "type": "STRING",
+          "links": [
+            107
+          ],
+          "shape": 3,
+          "label": "inputs_a",
+          "slot_index": 0
+        },
+        {
+          "name": "inputs_b",
+          "type": "STRING",
+          "links": [],
+          "shape": 3,
+          "label": "inputs_b",
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Imgae_To_Path"
+      },
+      "widgets_values": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "id": 52,
+      "type": "LoadImage",
+      "pos": [
+        457,
+        947
+      ],
+      "size": {
+        "0": 315,
+        "1": 314
+      },
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            125
+          ],
+          "shape": 3,
+          "label": "图像",
+          "slot_index": 0
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null,
+          "shape": 3,
+          "label": "遮罩"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "engin-akyurt-aXVro7lQyUM-unsplash.jpg",
+        "image"
+      ]
+    },
+    {
+      "id": 70,
+      "type": "StringFunction|pysssss",
+      "pos": [
+        817,
+        1083
+      ],
+      "size": {
+        "0": 400,
+        "1": 273.9999694824219
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            158
+          ],
+          "shape": 3,
+          "label": "字符串",
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "StringFunction|pysssss"
+      },
+      "widgets_values": [
+        "append",
+        "no",
+        "F:/test/ComfyUI/output/a_04332_b_04332_s_198189546_cfg_1.0_img_emb.pth",
+        "",
+        "",
+        "F:/test/ComfyUI/output/a_04332_b_04332_s_198189546_cfg_1.0_img_emb.pth"
+      ]
+    },
+    {
+      "id": 49,
+      "type": "Pops_Prior_Embedding",
+      "pos": [
+        1302,
+        758
+      ],
+      "size": {
+        "0": 315,
+        "1": 418
+      },
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "repo_id",
+          "type": "STRING",
+          "link": 151,
+          "widget": {
+            "name": "repo_id"
+          },
+          "label": "repo_id"
+        },
+        {
+          "name": "inputs_a",
+          "type": "STRING",
+          "link": 107,
+          "widget": {
+            "name": "inputs_a"
+          },
+          "label": "inputs_a"
+        },
+        {
+          "name": "inputs_b",
+          "type": "STRING",
+          "link": 158,
+          "widget": {
+            "name": "inputs_b"
+          },
+          "label": "inputs_b"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "links": [
+            161
+          ],
+          "shape": 3,
+          "label": "model",
+          "slot_index": 0
+        },
+        {
+          "name": "prior",
+          "type": "MODEL",
+          "links": [],
+          "shape": 3,
+          "label": "prior",
+          "slot_index": 1
+        },
+        {
+          "name": "prior_pipeline",
+          "type": "MODEL",
+          "links": [],
+          "shape": 3,
+          "label": "prior_pipeline",
+          "slot_index": 2
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            162
+          ],
+          "shape": 3,
+          "label": "positive",
+          "slot_index": 3
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": [
+            163
+          ],
+          "shape": 3,
+          "label": "negative",
+          "slot_index": 4
+        },
+        {
+          "name": "input_hidden_state",
+          "type": "CONDITIONING",
+          "links": [],
+          "shape": 3,
+          "label": "input_hidden_state",
+          "slot_index": 5
+        },
+        {
+          "name": "img_emb_file",
+          "type": "STRING",
+          "links": [],
+          "shape": 3,
+          "label": "img_emb_file",
+          "slot_index": 6
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Pops_Prior_Embedding"
+      },
+      "widgets_values": [
+        "",
+        "shiny",
+        "",
+        "",
+        false,
+        false,
+        1,
+        1187643102,
+        "randomize",
+        25,
+        "texturing",
+        1024,
+        1024
+      ]
+    },
+    {
+      "id": 71,
+      "type": "Pops_Unet_Sampler",
+      "pos": [
+        1803,
+        853
+      ],
+      "size": {
+        "0": 315,
+        "1": 218
+      },
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 161,
+          "label": "model",
+          "slot_index": 0
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 162,
+          "label": "positive"
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 163,
+          "label": "negative"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            164
+          ],
+          "shape": 3,
+          "label": "image",
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Pops_Unet_Sampler"
+      },
+      "widgets_values": [
+        996672552,
+        "randomize",
+        50,
+        1,
+        512,
+        512
+      ]
+    },
+    {
+      "id": 72,
+      "type": "SaveImage",
+      "pos": [
+        2225,
+        907
+      ],
+      "size": [
+        315,
+        270.0000228881836
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 164,
+          "label": "图像"
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        "ComfyUI"
+      ]
+    }
+  ],
+  "links": [
+    [
+      107,
+      23,
+      0,
+      49,
+      1,
+      "STRING"
+    ],
+    [
+      125,
+      52,
+      0,
+      23,
+      1,
+      "IMAGE"
+    ],
+    [
+      126,
+      3,
+      0,
+      23,
+      0,
+      "IMAGE"
+    ],
+    [
+      151,
+      63,
+      0,
+      49,
+      0,
+      "STRING"
+    ],
+    [
+      158,
+      70,
+      0,
+      49,
+      2,
+      "STRING"
+    ],
+    [
+      161,
+      49,
+      0,
+      71,
+      0,
+      "MODEL"
+    ],
+    [
+      162,
+      49,
+      3,
+      71,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      163,
+      49,
+      4,
+      71,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      164,
+      71,
+      0,
+      72,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.9090909090909091,
+      "offset": [
+        -262.57442394233476,
+        -311.2858046580368
+      ]
+    }
+  },
+  "version": 0.4
+}
