@@ -394,8 +394,8 @@ class Pops_Prior_Embedding:
                 "seed": ("INT", {"default": 2, "min": 1, "max": MAX_SEED}),
                 "prior_steps": ("INT", {"default": 25, "min": 1, "max": 4096}),
                 "function_type": (["texturing", "scene", "union", "instruct", ],),
-                "height": ("INT", {"default": 512, "min": 256, "max": 4096,"step": 64}),
-                "width": ("INT", {"default": 512, "min": 256, "max": 4096,"step": 64})
+                "height": ("INT", {"default": 1024, "min": 256, "max": 4096,"step": 64}),
+                "width": ("INT", {"default": 1024, "min": 256, "max": 4096,"step": 64})
             }
         }
 
@@ -429,11 +429,11 @@ class Pops_Unet_Sampler:
                 "positive": ("CONDITIONING",),
                 "negative": ("CONDITIONING",),
                 "seed": ("INT", {"default": 2, "min": 1, "max": MAX_SEED}),
-                "steps": ("INT", {"default": 50, "min": 1, "max": 4096}),
+                "steps": ("INT", {"default": 25, "min": 1, "max": 4096}),
                 "guidance_scale": (
                     "FLOAT", {"default": 1.0, "min": 0.1, "max": 24.0, "step": 0.1, "round": False}),
-                "height": ("INT", {"default": 512, "min": 256, "max": 4096, "step": 64}),
-                "width": ("INT", {"default": 512, "min": 256, "max": 4096, "step": 64})
+                "height": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64}),
+                "width": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64})
             }
         }
 
@@ -463,11 +463,11 @@ class Pops_Ipadapter_Sampler:
                 "positive": ("CONDITIONING",),
                 "checkpoints": (folder_paths.get_filename_list("checkpoints"),),
                 "seed": ("INT", {"default": 2, "min": 1, "max": MAX_SEED}),
-                "steps": ("INT", {"default": 50, "min": 1, "max": 4096}),
+                "steps": ("INT", {"default": 25, "min": 1, "max": 4096}),
                 "guidance_scale": (
                     "FLOAT", {"default": 1.0, "min": 0.1, "max": 24.0, "step": 0.1, "round": False}),
-                "height": ("INT", {"default": 512, "min": 256, "max": 4096, "step": 64}),
-                "width": ("INT", {"default": 512, "min": 256, "max": 4096, "step": 64})
+                "height": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64}),
+                "width": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64})
             }
         }
 
@@ -519,13 +519,13 @@ class Pops_Controlnet_Sampler:
                 "control_net": ("CONTROL_NET",),
                 "checkpoints": (folder_paths.get_filename_list("checkpoints"),),
                 "seed": ("INT", {"default": 2, "min": 1, "max": MAX_SEED}),
-                "steps": ("INT", {"default": 50, "min": 1, "max": 4096}),
+                "steps": ("INT", {"default": 25, "min": 1, "max": 4096}),
                 "guidance_scale": (
                     "FLOAT", {"default": 1.0, "min": 0.1, "max": 24.0, "step": 0.1, "round": False}),
                 "controlnet_scale": (
                     "FLOAT", {"default": 0.5, "min": 0.1, "max": 24.0, "step": 0.1, "round": False}),
-                "height": ("INT", {"default": 512, "min": 256, "max": 4096, "step": 64}),
-                "width": ("INT", {"default": 512, "min": 256, "max": 4096, "step": 64})
+                "height": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64}),
+                "width": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64})
             }
         }
 
@@ -593,11 +593,11 @@ class Pops_Mean_Sampler:
                 "prior_pipeline": ("MODEL",),
                 "input_hidden_state": ("CONDITIONING",),
                 "seed": ("INT", {"default": 2, "min": 1, "max": MAX_SEED}),
-                "steps": ("INT", {"default": 50, "min": 1, "max": 4096}),
+                "steps": ("INT", {"default": 25, "min": 1, "max": 4096}),
                 "guidance_scale": (
                     "FLOAT", {"default": 4.0, "min": 0.1, "max": 50.0, "step": 0.1, "round": False}),
-                "height": ("INT", {"default": 512, "min": 256, "max": 4096, "step": 64}),
-                "width": ("INT", {"default": 512, "min": 256, "max": 4096, "step": 64})
+                "height": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64}),
+                "width": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64})
             }
         }
 
@@ -631,8 +631,8 @@ class Imgae_To_Path:
             "required": {
                 "image": ("IMAGE",),
                 "image_operator": ("IMAGE",),
-                "height": ("INT", {"default": 512, "min": 256, "max": 4096, "step": 64}),
-                "width": ("INT", {"default": 512, "min": 256, "max": 4096, "step": 64})
+                "height": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64}),
+                "width": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64})
             }
         }
 
