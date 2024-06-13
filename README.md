@@ -38,12 +38,19 @@ pip install -r requirements.txt
 The default repo node will automatically connect to the network to download all necessary models  ！！
 --
 kandinsky-community/kandinsky-2-2-prior: [link](https://huggingface.co/kandinsky-community/kandinsky-2-2-prior)   
+
 kandinsky-community/kandinsky-2-2-decoder: [link](https://huggingface.co/kandinsky-community/kandinsky-2-2-decoder)   
+
 h94/IP-Adapter ip-adapter_sdxl.bin  [link](https://huggingface.co/h94/IP-Adapter)   
+
 pOpsPaper/operators  （four models）     [link](https://huggingface.co/pOpsPaper/operators)  
+
 ----and---    
-Menu 'checkpoint' choice any comfyUI or Web UI SDXL model (example：Juggernaut-XL_v9_RunDiffusionPhoto_v2.safetensors )   
-Menu 'vae' choice any comfyUI or Web UI SDXL vae (example：sdxl.vae.safetensors )    
+Menu 'checkpoint' choice any comfyUI or Web UI SDXL model   
+Example：Juggernaut-XL_v9_RunDiffusionPhoto_v2.safetensors    
+
+Menu 'vae' choice any comfyUI or Web UI SDXL vae   
+Example：madebyollin/sdxl-vae-fp16-fix or sdxl.vae.safetensors       
 
 3.2 离线模式 offline   
 在插件的weights目录下，如图放置ip-adapter_sdxl.bin，然后diffusers目录，放置其余3组模型。  
