@@ -21,6 +21,7 @@ dir_path = os.path.dirname(os.path.abspath(__file__))
 path_dir = os.path.dirname(dir_path)
 file_path = os.path.dirname(path_dir)
 
+load_ip_adapter=IPAdapterMixin.load_ip_adapter
 
 def instance_path(path, repo):
     if repo == "":
@@ -479,7 +480,7 @@ class Pops_Ipadapter_Sampler:
     def pops_adapter_sampler(self,positive,checkpoints,seed,steps,guidance_scale,height,width):
         base_diffuser = get_instance_path(folder_paths.get_full_path("checkpoints", checkpoints))
         device="cuda"
-        ipadapter_model = get_instance_path(os.path.join(dir_path, "weights", "ip-adapter_sdxl.bin"))
+        ipadapter_model = get_instance_path(os.path.join(dir_path, "weights","ip-adapter_sdxl.bin"))
         original_config_file = get_instance_path(os.path.join(dir_path, "weights", "config", "sd_xl_base.yaml"))
         ip_pipeline = StableDiffusionXLPipeline.from_single_file(base_diffuser,
                                                                  original_config_file=original_config_file,
@@ -540,7 +541,7 @@ class Pops_Controlnet_Sampler:
         base_diffuser = get_instance_path(folder_paths.get_full_path("checkpoints", checkpoints))
         vae=get_instance_path(folder_paths.get_full_path("vae", vae))
         device = "cuda"
-        ipadapter_model = get_instance_path(os.path.join(dir_path, "weights", "ip-adapter_sdxl.bin"))
+        ipadapter_model = get_instance_path(os.path.join(dir_path, "weights","ip-adapter_sdxl.bin"))
         original_config_file = get_instance_path(os.path.join(dir_path, "weights", "config", "sd_xl_base.yaml"))
         config_file=get_instance_path(os.path.join(file_path,"models","configs","v1-inference.yaml"))
         vae = AutoencoderKL.from_single_file(vae, config_file=config_file,torch_dtype=torch.float16).to("cuda")
