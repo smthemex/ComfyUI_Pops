@@ -21,8 +21,9 @@ pOpsPaper method From: [link](https://github.com/pOpsPaper/pOps)
   
 2.requirements  
 ----
+  ``` python 
 pip install -r requirements.txt
-
+ ```
    
 3 Need  models 
 ----
@@ -37,15 +38,66 @@ pip install -r requirements.txt
 The default repo node will automatically connect to the network to download all necessary models  ！！
 --
 kandinsky-community/kandinsky-2-2-prior: [link](https://huggingface.co/kandinsky-community/kandinsky-2-2-prior)   
-kandinsky-community/kandinsky-2-2-prior: [link](https://huggingface.co/kandinsky-community/kandinsky-2-2-decoder)   
+kandinsky-community/kandinsky-2-2-decoder: [link](https://huggingface.co/kandinsky-community/kandinsky-2-2-decoder)   
 h94/IP-Adapter ip-adapter_sdxl.bin  [link](https://huggingface.co/h94/IP-Adapter)   
-pOpsPaper/operators   four models     [link](https://huggingface.co/pOpsPaper/operators)  
+pOpsPaper/operators  （four models）     [link](https://huggingface.co/pOpsPaper/operators)  
 ----and---    
-menu 'checkpoint' choice any comfyUI or Web UI SDXL model (example：Juggernaut-XL_v9_RunDiffusionPhoto_v2.safetensors )   
-menu 'vae' choice any comfyUI or Web UI SDXL vae (example：sdxl.vae.safetensors )    
+Menu 'checkpoint' choice any comfyUI or Web UI SDXL model (example：Juggernaut-XL_v9_RunDiffusionPhoto_v2.safetensors )   
+Menu 'vae' choice any comfyUI or Web UI SDXL vae (example：sdxl.vae.safetensors )    
 
-3.2 离线模式 
-在插件的weights目录下，放置ip-adapter_sdxl.bin，然后diffusers目录，放置其余3组模型。   
+3.2 离线模式 offline   
+在插件的weights目录下，如图放置ip-adapter_sdxl.bin，然后diffusers目录，放置其余3组模型。  
+
+```   
+├── ComfyUI/models/diffusers/
+|      ├──kandinsky-community/
+|             ├── kandinsky-2-2-decoder/
+|                    ├── model_index.json 
+|                    ├──unet/
+|                        ├── config.json
+|                        ├── diffusion_pytorch_model.safetensors
+|                    ├──scheduler/
+|                        ├── scheduler_config.json
+|                    ├──movq/
+|                        ├── config.json
+|                        ├── diffusion_pytorch_model.safetensors
+|             ├── kandinsky-2-2-prior/       
+|                    ├── model_index.json 
+|                    ├──tokenizer/
+|                        ├── merges.txt
+|                        ├── special_tokens_map.json
+|                        ├── tokenizer_config.json
+|                        ├── vocab.json
+|                    ├──text_encoder/
+|                        ├── config.json
+|                        ├── model.safetensors
+|                    ├──scheduler/
+|                        ├── scheduler_config.json
+|                    ├──prior/
+|                        ├── config.json
+|                        ├── diffusion_pytorch_model.safetensors  
+|                    ├──image_processor/
+|                        ├── preprocessor_config.json  
+|                    ├──image_encoder/
+|                        ├── config.json
+|                        ├── model.safetensors
+│
+│      ├──pOpsPaper/operators/models/
+|             ├── instruct/
+|                    ├── learned_prior.pth
+|             ├── scene/
+|                    ├── learned_prior.pth
+|             ├── texturing/
+|                    ├── learned_prior.pth
+|             ├── union/
+|                    ├── learned_prior.pth
+|                                                   
+├── ComfyUI/custom_nodes/ComfyUI_Pops/
+|      ├──weights/
+|             ├── ip-adapter_sdxl.bin
+
+```
+
 
 4 Example
 ----
