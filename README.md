@@ -98,6 +98,12 @@ Menu 'vae' choice any comfyUI or Web UI SDXL vae (example：sdxl.vae.safetensors
 
 ```
 
+如果使用离线模式，pOpsPaper/operators 这一栏，填写方式如下(后面的类似models/instructlearned_prior.pth路径切勿填写)：  
+If using offline mode, fill in the pOpsPaper/operators column as follows (do not fill in the path similar to models/instructlearned_primary.pth):   
+
+--Example--   
+Your_local_model_path/pOpsPaper/operators     
+---
 
 4 Example
 ----
