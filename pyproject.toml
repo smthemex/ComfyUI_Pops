@@ -1,0 +1,15 @@
+[project]
+name = "comfyui_pops"
+description = "You can use [a/Popspaper](https://popspaper.github.io/pOps/) method in comfyUI"
+version = "1.0.0"
+license = "LICENSE"
+dependencies = ["pyrallis"]
+
+[project.urls]
+Repository = "https://github.com/smthemex/ComfyUI_Pops"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "ComfyUI_Pops"
+Icon = ""
