@@ -9,7 +9,9 @@ This node mainly references the methods of pOpsPaper, which can achieve material
 
 pOpsPaper method From: [link](https://github.com/pOpsPaper/pOps)
 ----
-
+Update 
+---
+---删除重复的节点，整合在一起
 
 1.Installation
 -----
@@ -114,11 +116,11 @@ Your_local_model_path/pOpsPaper/operators
 
 4 Example
 ----
-object2texture  using Unet    物体赋予材质，Unet采样     
-![](https://github.com/smthemex/ComfyUI_Pops/blob/main/example/example_unet.png)
+object2texture  using IPadapter   物体赋予材质，  
+![](https://github.com/smthemex/ComfyUI_Pops/blob/main/example/ipsampler.png)
 
 embedding2scene  使用插件生成的embedding 加入到背景融合工作流中    
-![](https://github.com/smthemex/ComfyUI_Pops/blob/main/example/emb.png)
+![](https://github.com/smthemex/ComfyUI_Pops/blob/main/example/using%20pt.png)
 
 object2texture using controlnet  物体赋予材质，controlnet加ip采样，示例底模和VAE没选好。   
 ![](https://github.com/smthemex/ComfyUI_Pops/blob/main/example/example_controlnet.png)
