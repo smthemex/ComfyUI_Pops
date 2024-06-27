@@ -418,170 +418,8 @@ class Pops_Prior_Embedding:
         return (decoder,prior,prior_pipeline,positive, negative,input_hidden_state,img_emb_file)
 
 
-class Pops_Unet_Sampler:
-    def __init__(self):
-        pass
 
-    @classmethod
-    def INPUT_TYPES(cls):
-        return {
-            "required": {
-                "model": ("MODEL",),
-                "positive": ("CONDITIONING",),
-                "negative": ("CONDITIONING",),
-                "seed": ("INT", {"default": 2, "min": 1, "max": MAX_SEED}),
-                "steps": ("INT", {"default": 25, "min": 1, "max": 4096}),
-                "guidance_scale": (
-                    "FLOAT", {"default": 1.0, "min": 0.1, "max": 24.0, "step": 0.1, "round": False}),
-                "height": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64}),
-                "width": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64})
-            }
-        }
-
-    RETURN_TYPES = ("IMAGE",)
-    RETURN_NAMES = ("image",)
-    FUNCTION = "pops_unet_sampler"
-    CATEGORY = "Pops"
-
-    def pops_unet_sampler(self,model, positive,negative, seed, steps,guidance_scale,height,width):
-        device="cuda"
-        images = model(image_embeds=positive, negative_image_embeds=negative,
-                         num_inference_steps=steps, height=height,
-                         width=width, guidance_scale=guidance_scale,
-                         generator=torch.Generator(device=device).manual_seed(seed)).images
-        images=phi2narry(images[0])
-        return (images,)
-
-
-class Pops_Ipadapter_Sampler:
-    def __init__(self):
-        pass
-
-    @classmethod
-    def INPUT_TYPES(cls):
-        return {
-            "required": {
-                "positive": ("CONDITIONING",),
-                "checkpoints": (folder_paths.get_filename_list("checkpoints"),),
-                "seed": ("INT", {"default": 2, "min": 1, "max": MAX_SEED}),
-                "steps": ("INT", {"default": 25, "min": 1, "max": 4096}),
-                "guidance_scale": (
-                    "FLOAT", {"default": 1.0, "min": 0.1, "max": 24.0, "step": 0.1, "round": False}),
-                "height": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64}),
-                "width": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64})
-            }
-        }
-
-    RETURN_TYPES = ("IMAGE",)
-    RETURN_NAMES = ("image",)
-    FUNCTION = "pops_adapter_sampler"
-    CATEGORY = "Pops"
-
-    def pops_adapter_sampler(self,positive,checkpoints,seed,steps,guidance_scale,height,width):
-        base_diffuser = get_instance_path(folder_paths.get_full_path("checkpoints", checkpoints))
-        device="cuda"
-        ipadapter_model = get_instance_path(os.path.join(dir_path, "weights","ip-adapter_sdxl.bin"))
-        original_config_file = get_instance_path(os.path.join(dir_path, "weights", "config", "sd_xl_base.yaml"))
-        ip_pipeline = StableDiffusionXLPipeline.from_single_file(base_diffuser,
-                                                                 original_config_file=original_config_file,
-                                                                 torch_dtype=torch.float16)
-        if os.path.exists(ipadapter_model):
-            ip_pipeline.load_ip_adapter(ipadapter_model,
-                                        subfolder="",
-                                        weight_name="ip-adapter_sdxl.bin", image_encoder_folder=None)
-        else:
-            ip_pipeline.load_ip_adapter("h94/IP-Adapter", subfolder="sdxl_models", weight_name="ip-adapter_sdxl.bin",
-                                        image_encoder_folder=None)
-        ip_pipeline.to(device)
-        ip_pipeline.set_ip_adapter_scale(guidance_scale)
-        images = ip_pipeline(prompt="", ip_adapter_image_embeds=[
-            torch.stack([torch.zeros_like(positive), positive])],
-                             negative_prompt="deformed, ugly, wrong proportion, low res, bad anatomy, worst quality, low quality",
-                             num_inference_steps=steps,
-                             height=height,
-                             width=width,
-                             generator=torch.Generator(device="cuda").manual_seed(seed),
-                             ).images
-        images=phi2narry(images[0])
-        return (images,)
-
-
-class Pops_Controlnet_Sampler:
-    def __init__(self):
-        pass
-
-    @classmethod
-    def INPUT_TYPES(cls):
-        return {
-            "required": {
-                "image": ("IMAGE", ),
-                "vae": (folder_paths.get_filename_list("vae"),),
-                "positive": ("CONDITIONING",),
-                "control_net": ("CONTROL_NET",),
-                "checkpoints": (folder_paths.get_filename_list("checkpoints"),),
-                "seed": ("INT", {"default": 2, "min": 1, "max": MAX_SEED}),
-                "steps": ("INT", {"default": 25, "min": 1, "max": 4096}),
-                "guidance_scale": (
-                    "FLOAT", {"default": 1.0, "min": 0.1, "max": 24.0, "step": 0.1, "round": False}),
-                "controlnet_scale": (
-                    "FLOAT", {"default": 0.5, "min": 0.1, "max": 24.0, "step": 0.1, "round": False}),
-                "height": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64}),
-                "width": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64})
-            }
-        }
-
-    RETURN_TYPES = ("IMAGE",)
-    RETURN_NAMES = ("image",)
-    FUNCTION = "pops_controlnet_sampler"
-    CATEGORY = "Pops"
-
-    def pops_controlnet_sampler(self,image,vae,positive,control_net,checkpoints,seed,steps,guidance_scale,controlnet_scale,height,width):
-        ss = ImageScale()
-        image = ss.upscale(image, "lanczos", height, width, "center")[0]
-        base_diffuser = get_instance_path(folder_paths.get_full_path("checkpoints", checkpoints))
-        vae=get_instance_path(folder_paths.get_full_path("vae", vae))
-        device = "cuda"
-        ipadapter_model = get_instance_path(os.path.join(dir_path, "weights","ip-adapter_sdxl.bin"))
-        original_config_file = get_instance_path(os.path.join(dir_path, "weights", "config", "sd_xl_base.yaml"))
-        config_file=get_instance_path(os.path.join(file_path,"models","configs","v1-inference.yaml"))
-        vae = AutoencoderKL.from_single_file(vae, config_file=config_file,torch_dtype=torch.float16).to("cuda")
-        pipeline = StableDiffusionXLPipeline.from_single_file(base_diffuser,
-                                                                 original_config_file=original_config_file,
-                                                                 controlnet=control_net,
-                                                                 vae=vae,
-                                                                 variant="fp16",
-                                                                 use_safetensors=True,
-                                                                 torch_dtype=torch.float16)
-        pipeline.enable_xformers_memory_efficient_attention()
-        pipeline.enable_vae_tiling()
-
-        # 加载ip
-        if os.path.exists(ipadapter_model):
-            pipeline.load_ip_adapter(ipadapter_model,
-                                        subfolder="",
-                                        weight_name="ip-adapter_sdxl.bin", image_encoder_folder=None)
-        else:
-            pipeline.load_ip_adapter("h94/IP-Adapter", subfolder="sdxl_models", weight_name="ip-adapter_sdxl.bin",
-                                        image_encoder_folder=None)
-        pipeline.to(device)
-        pipeline.set_ip_adapter_scale(guidance_scale)
-        pipeline.enable_model_cpu_offload()
-
-        images = pipeline(
-            prompt="",
-            image=image,
-            ip_adapter_image_embeds=[
-                torch.stack([torch.zeros_like(positive), positive])],
-            negative_prompt="",
-            num_inference_steps=steps,
-            controlnet_conditioning_scale=controlnet_scale,
-            generator=torch.Generator(device="cuda").manual_seed(seed),
-        ).images
-        images=phi2narry(images[0])
-        return (images,)
-
-
-class Pops_Mean_Sampler:
+class Pops_Sampler:
     def __init__(self):
         pass
 
@@ -592,33 +430,116 @@ class Pops_Mean_Sampler:
                 "model": ("MODEL",),
                 "prior": ("MODEL",),
                 "prior_pipeline": ("MODEL",),
+                "positive": ("CONDITIONING",),
+                "negative": ("CONDITIONING",),
                 "input_hidden_state": ("CONDITIONING",),
+                "checkpoints": (folder_paths.get_filename_list("checkpoints"),),
+                "vae": (folder_paths.get_filename_list("vae"),),
+                "sampler_type":(["Unet","IP_adapter","Controlnet","Mean"],),
                 "seed": ("INT", {"default": 2, "min": 1, "max": MAX_SEED}),
                 "steps": ("INT", {"default": 25, "min": 1, "max": 4096}),
                 "guidance_scale": (
-                    "FLOAT", {"default": 4.0, "min": 0.1, "max": 50.0, "step": 0.1, "round": False}),
+                    "FLOAT", {"default": 1.0, "min": 0.1, "max": 24.0, "step": 0.1, "round": False}),
                 "height": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64}),
-                "width": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64})
-            }
+                "width": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64}),
+                "controlnet_scale": (
+                    "FLOAT", {"default": 0.5, "min": 0.1, "max": 24.0, "step": 0.1, "round": False})
+            },
+            "optional": {"image": ("IMAGE",),
+                        "control_net": ("CONTROL_NET",),}
         }
 
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("image",)
-    FUNCTION = "pops_mean_sampler"
+    FUNCTION = "pops_sampler"
     CATEGORY = "Pops"
 
-    def pops_mean_sampler(self,model,prior,prior_pipeline,input_hidden_state,seed,steps,guidance_scale,height,width):
-        device = "cuda"
-        mean_emb = 0.5 * input_hidden_state[:, 0] + 0.5 * input_hidden_state[:, 1]
-        mean_emb = (mean_emb * prior.clip_std) + prior.clip_mean
-        del prior
-        zero_embeds = prior_pipeline.get_zero_embed(mean_emb.shape[0], device=mean_emb.device)
-        del prior_pipeline
-        images = model(image_embeds=mean_emb, negative_image_embeds=zero_embeds,
-                                  num_inference_steps=steps, height=height,
-                                  width=width, guidance_scale=guidance_scale,
-                                  generator=torch.Generator(device=device).manual_seed(seed)).images
+    def pops_sampler(self,model,prior,prior_pipeline, positive,negative,input_hidden_state, checkpoints,vae,sampler_type,seed, steps,guidance_scale,height,width,controlnet_scale,**kwargs):
+        device="cuda"
+        if sampler_type=="Unet":
+            del  prior, prior_pipeline
+            images = model(image_embeds=positive, negative_image_embeds=negative,
+                           num_inference_steps=steps, height=height,
+                           width=width, guidance_scale=guidance_scale,
+                           generator=torch.Generator(device=device).manual_seed(seed)).images
+        elif sampler_type=="IP_adapter":
+            base_diffuser = get_instance_path(folder_paths.get_full_path("checkpoints", checkpoints))
+            ipadapter_model = get_instance_path(os.path.join(dir_path, "weights", "ip-adapter_sdxl.bin"))
+            original_config_file = get_instance_path(os.path.join(dir_path, "weights", "config", "sd_xl_base.yaml"))
+            ip_pipeline = StableDiffusionXLPipeline.from_single_file(base_diffuser,
+                                                                     original_config_file=original_config_file,
+                                                                     torch_dtype=torch.float16)
+            if os.path.exists(ipadapter_model):
+                ip_pipeline.load_ip_adapter(ipadapter_model,
+                                            subfolder="",
+                                            weight_name="ip-adapter_sdxl.bin", image_encoder_folder=None)
+            else:
+                ip_pipeline.load_ip_adapter("h94/IP-Adapter", subfolder="sdxl_models",
+                                            weight_name="ip-adapter_sdxl.bin",
+                                            image_encoder_folder=None)
+            ip_pipeline.to(device)
+            ip_pipeline.set_ip_adapter_scale(guidance_scale)
+            images = ip_pipeline(prompt="", ip_adapter_image_embeds=[
+                torch.stack([torch.zeros_like(positive), positive])],
+                                 negative_prompt="deformed, ugly, wrong proportion, low res, bad anatomy, worst quality, low quality",
+                                 num_inference_steps=steps,
+                                 height=height,
+                                 width=width,
+                                 generator=torch.Generator(device="cuda").manual_seed(seed),
+                                 ).images
+        elif sampler_type=="Controlnet":
+            del model,prior,prior_pipeline
+            image = kwargs["image"]
+            control_net=kwargs["control_net"]
+            ss = ImageScale()
+            image = ss.upscale(image, "lanczos", height, width, "center")[0]
+            base_diffuser = get_instance_path(folder_paths.get_full_path("checkpoints", checkpoints))
+            vae = get_instance_path(folder_paths.get_full_path("vae", vae))
+            ipadapter_model = get_instance_path(os.path.join(dir_path, "weights", "ip-adapter_sdxl.bin"))
+            original_config_file = get_instance_path(os.path.join(dir_path, "weights", "config", "sd_xl_base.yaml"))
+            config_file = get_instance_path(os.path.join(file_path, "models", "configs", "v1-inference.yaml"))
+            vae = AutoencoderKL.from_single_file(vae, config_file=config_file, torch_dtype=torch.float16).to("cuda")
+            pipeline = StableDiffusionXLPipeline.from_single_file(base_diffuser,
+                                                                  original_config_file=original_config_file,
+                                                                  controlnet=control_net,
+                                                                  vae=vae,
+                                                                  variant="fp16",
+                                                                  use_safetensors=True,
+                                                                  torch_dtype=torch.float16)
+            pipeline.enable_xformers_memory_efficient_attention()
+            pipeline.enable_vae_tiling()
+            # 加载ip
+            if os.path.exists(ipadapter_model):
+                pipeline.load_ip_adapter(ipadapter_model,
+                                         subfolder="",
+                                         weight_name="ip-adapter_sdxl.bin", image_encoder_folder=None)
+            else:
+                pipeline.load_ip_adapter("h94/IP-Adapter", subfolder="sdxl_models", weight_name="ip-adapter_sdxl.bin",
+                                         image_encoder_folder=None)
+            pipeline.to(device)
+            pipeline.set_ip_adapter_scale(guidance_scale)
+            pipeline.enable_model_cpu_offload()
 
+            images = pipeline(
+                prompt="",
+                image=image,
+                ip_adapter_image_embeds=[
+                    torch.stack([torch.zeros_like(positive), positive])],
+                negative_prompt="",
+                num_inference_steps=steps,
+                controlnet_conditioning_scale=controlnet_scale,
+                generator=torch.Generator(device="cuda").manual_seed(seed),
+            ).images
+        else:
+            mean_emb = 0.5 * input_hidden_state[:, 0] + 0.5 * input_hidden_state[:, 1]
+            mean_emb = (mean_emb * prior.clip_std) + prior.clip_mean
+            del prior
+            zero_embeds = prior_pipeline.get_zero_embed(mean_emb.shape[0], device=mean_emb.device)
+            del prior_pipeline
+            images = model(image_embeds=mean_emb, negative_image_embeds=zero_embeds,
+                           num_inference_steps=steps, height=height,
+                           width=width, guidance_scale=guidance_scale,
+                           generator=torch.Generator(device=device).manual_seed(seed)).images
         images=phi2narry(images[0])
         return (images,)
 
@@ -665,10 +586,7 @@ class Imgae_To_Path:
 NODE_CLASS_MAPPINGS = {
     "Pops_Repo_Choice": Pops_Repo_Choice,
     "Pops_Prior_Embedding":Pops_Prior_Embedding,
-    "Pops_Unet_Sampler":Pops_Unet_Sampler,
-    "Pops_Ipadapter_Sampler":Pops_Ipadapter_Sampler,
-    "Pops_Controlnet_Sampler":Pops_Controlnet_Sampler,
-    "Pops_Mean_Sampler":Pops_Mean_Sampler,
+    "Pops_Sampler":Pops_Sampler,
     "Imgae_To_Path": Imgae_To_Path,
 
 }
@@ -676,9 +594,6 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "Pops_Repo_Choice": "Pops_Repo_Choice",
     "Pops_Prior_Embedding":"Pops_Prior_Embedding",
-    "Pops_Unet_Sampler":"Pops_Unet_Sampler",
-    "Pops_Ipadapter_Sampler":"Pops_Ipadapter_Sampler",
-    "Pops_Controlnet_Sampler":"Pops_Controlnet_Sampler",
-    "Pops_Mean_Sampler":"Pops_Mean_Sampler",
+    "Pops_Sampler":"Pops_Sampler",
     "Imgae_To_Path": "Imgae_To_Path",
 }
