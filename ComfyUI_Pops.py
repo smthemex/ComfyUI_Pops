@@ -23,6 +23,10 @@ file_path = os.path.dirname(path_dir)
 
 load_ip_adapter=IPAdapterMixin.load_ip_adapter
 
+controlnet_list=["controlnet-openpose-sdxl-1.0","controlnet-scribble-sdxl-1.0","controlnet-tile-sdxl-1.0","controlnet-depth-sdxl-1.0","controlnet-canny-sdxl-1.0","MistoLine"]
+
+
+
 def instance_path(path, repo):
     if repo == "":
         if path == "none":
@@ -45,22 +49,17 @@ def function_type_choice(type_choice):
 
 
 paths = []
-paths_a = []
 for search_path in folder_paths.get_folder_paths("diffusers"):
     if os.path.exists(search_path):
         for root, subdir, files in os.walk(search_path, followlinks=True):
             if "model_index.json" in files:
                 paths.append(os.path.relpath(root, start=search_path))
-            if "config.json" in files:
-                paths_a.append(os.path.relpath(root, start=search_path))
-                paths_a = [z for z in paths_a if "controlnet-depth-sdxl-1.0" in z]
-
-if paths != []:
+if paths:
     paths = ["none"] + [x for x in paths if x]
 else:
     paths = ["none", ]
-
-
+    
+    
 def phi2narry(img):
     img = torch.from_numpy(np.array(img).astype(np.float32) / 255.0).unsqueeze(0)
     return img
@@ -231,7 +230,7 @@ def get_embedding_instruct(type_choice, kandinsky_prior_repo, prior_repo, kandin
             image_processor = CLIPImageProcessor.from_pretrained(kandinsky_prior_repo,
                                                                  subfolder='image_processor')
         except:
-            path_pro = hf_hub_download(kandinsky_prior_repo, filename='image_processor/preprocessor_config.json')
+            path_pro = hf_hub_download(kandinsky_prior_repo,  subfolder='image_processor',filename='preprocessor_config.json')
             image_processor = CLIPImageProcessor.from_pretrained(path_pro)
         finally:
             pass
@@ -240,7 +239,7 @@ def get_embedding_instruct(type_choice, kandinsky_prior_repo, prior_repo, kandin
             image_processor = CLIPImageProcessor.from_pretrained(kandinsky_prior_repo, subfolder='image_processor')
         except:
             path_pro = hf_hub_download("kandinsky-community/kandinsky-2-2-prior",
-                                       filename='image_processor/preprocessor_config.json')
+                                       subfolder='image_processor', filename='preprocessor_config.json')
             image_processor = CLIPImageProcessor.from_pretrained(path_pro)
         finally:
             pass
@@ -279,8 +278,8 @@ def get_embedding_instruct(type_choice, kandinsky_prior_repo, prior_repo, kandin
     paths = [(input_a, text) for input_a in inputs_a for text in texts]
 
     # just so we have more variety to look at during the inference
-    random.shuffle(paths)
-
+    #random.shuffle(paths)
+    
     for input_a_path, text in paths:
         # for input_a_path, text in tqdm(input_path):
         def process_image(input_path):
@@ -329,19 +328,19 @@ def get_embedding_instruct(type_choice, kandinsky_prior_repo, prior_repo, kandin
 
         negative_input_embeds = torch.zeros_like(input_image_embeds)
         negative_hidden_states = torch.zeros_like(input_hidden_state)
-        for scale in prior_guidance_scale:
-            img_emb = prior_pipeline(input_embeds=input_image_embeds, input_hidden_states=input_hidden_state,
-                                     negative_input_embeds=negative_input_embeds,
-                                     negative_input_hidden_states=negative_hidden_states,
-                                     num_inference_steps=prior_steps,
-                                     num_images_per_prompt=1,
-                                     guidance_scale=scale,
-                                     generator=torch.Generator(device=device).manual_seed(prior_seeds))
+        # for scale in prior_guidance_scale:
+        img_emb = prior_pipeline(input_embeds=input_image_embeds, input_hidden_states=input_hidden_state,
+                                 negative_input_embeds=negative_input_embeds,
+                                 negative_input_hidden_states=negative_hidden_states,
+                                 num_inference_steps=prior_steps,
+                                 num_images_per_prompt=1,
+                                 guidance_scale=prior_guidance_scale,
+                                 generator=torch.Generator(device=device).manual_seed(prior_seeds))
 
-            img_emb_file = os.path.join(output_dir, f"{out_name}_s_{prior_seeds}_cfg_{scale}_img_emb.pth")
-            torch.save(img_emb, img_emb_file)
-            positive_emb = img_emb.image_embeds
-            negative_emb = img_emb.negative_image_embeds
+        img_emb_file = os.path.join(output_dir, f"{out_name}_s_{prior_seeds}_cfg_{prior_guidance_scale}_img_emb.pth")
+        torch.save(img_emb, img_emb_file)
+        positive_emb = img_emb.image_embeds
+        negative_emb = img_emb.negative_image_embeds
 
     return decoder,prior,prior_pipeline,positive_emb, negative_emb,input_hidden_state,img_emb_file
 
@@ -395,8 +394,8 @@ class Pops_Prior_Embedding:
                 "seed": ("INT", {"default": 2, "min": 1, "max": MAX_SEED}),
                 "prior_steps": ("INT", {"default": 25, "min": 1, "max": 4096}),
                 "function_type": (["texturing", "scene", "union", "instruct", ],),
-                "height": ("INT", {"default": 1024, "min": 256, "max": 4096,"step": 64}),
-                "width": ("INT", {"default": 1024, "min": 256, "max": 4096,"step": 64})
+                "height": ("INT", {"default": 768, "min": 256, "max": 4096,"step": 64}),
+                "width": ("INT", {"default": 768, "min": 256, "max": 4096,"step": 64})
             }
         }
 
@@ -440,8 +439,8 @@ class Pops_Sampler:
                 "steps": ("INT", {"default": 25, "min": 1, "max": 4096}),
                 "guidance_scale": (
                     "FLOAT", {"default": 1.0, "min": 0.1, "max": 24.0, "step": 0.1, "round": False}),
-                "height": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64}),
-                "width": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64}),
+                "height": ("INT", {"default": 768, "min": 256, "max": 4096, "step": 64}),
+                "width": ("INT", {"default": 768, "min": 256, "max": 4096, "step": 64}),
                 "controlnet_scale": (
                     "FLOAT", {"default": 0.5, "min": 0.1, "max": 24.0, "step": 0.1, "round": False})
             },
@@ -458,17 +457,24 @@ class Pops_Sampler:
         device="cuda"
         if sampler_type=="Unet":
             del  prior, prior_pipeline
+            torch.cuda.empty_cache()
             images = model(image_embeds=positive, negative_image_embeds=negative,
                            num_inference_steps=steps, height=height,
                            width=width, guidance_scale=guidance_scale,
                            generator=torch.Generator(device=device).manual_seed(seed)).images
         elif sampler_type=="IP_adapter":
+            del model,prior, prior_pipeline
+            torch.cuda.empty_cache()
             base_diffuser = get_instance_path(folder_paths.get_full_path("checkpoints", checkpoints))
             ipadapter_model = get_instance_path(os.path.join(dir_path, "weights", "ip-adapter_sdxl.bin"))
             original_config_file = get_instance_path(os.path.join(dir_path, "weights", "config", "sd_xl_base.yaml"))
             ip_pipeline = StableDiffusionXLPipeline.from_single_file(base_diffuser,
                                                                      original_config_file=original_config_file,
                                                                      torch_dtype=torch.float16)
+            
+            ip_pipeline.enable_xformers_memory_efficient_attention()
+            ip_pipeline.enable_freeu(s1=0.6, s2=0.4, b1=1.1, b2=1.2)
+            ip_pipeline.enable_vae_slicing()
             if os.path.exists(ipadapter_model):
                 ip_pipeline.load_ip_adapter(ipadapter_model,
                                             subfolder="",
@@ -489,6 +495,7 @@ class Pops_Sampler:
                                  ).images
         elif sampler_type=="Controlnet":
             del model,prior,prior_pipeline
+            torch.cuda.empty_cache()
             image = kwargs["image"]
             control_net=kwargs["control_net"]
             ss = ImageScale()
@@ -508,6 +515,7 @@ class Pops_Sampler:
                                                                   torch_dtype=torch.float16)
             pipeline.enable_xformers_memory_efficient_attention()
             pipeline.enable_vae_tiling()
+            pipeline.enable_freeu(s1=0.6, s2=0.4, b1=1.1, b2=1.2)
             # 加载ip
             if os.path.exists(ipadapter_model):
                 pipeline.load_ip_adapter(ipadapter_model,
@@ -534,8 +542,10 @@ class Pops_Sampler:
             mean_emb = 0.5 * input_hidden_state[:, 0] + 0.5 * input_hidden_state[:, 1]
             mean_emb = (mean_emb * prior.clip_std) + prior.clip_mean
             del prior
+            torch.cuda.empty_cache()
             zero_embeds = prior_pipeline.get_zero_embed(mean_emb.shape[0], device=mean_emb.device)
             del prior_pipeline
+            torch.cuda.empty_cache()
             images = model(image_embeds=mean_emb, negative_image_embeds=zero_embeds,
                            num_inference_steps=steps, height=height,
                            width=width, guidance_scale=guidance_scale,
@@ -553,8 +563,8 @@ class Imgae_To_Path:
             "required": {
                 "image": ("IMAGE",),
                 "image_operator": ("IMAGE",),
-                "height": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64}),
-                "width": ("INT", {"default": 1024, "min": 256, "max": 4096, "step": 64})
+                "height": ("INT", {"default": 768, "min": 256, "max": 4096, "step": 64}),
+                "width": ("INT", {"default": 768, "min": 256, "max": 4096, "step": 64})
             }
         }
 
