@@ -24,10 +24,11 @@ My ComfyUI node list：
 
 Tips
 ---
-本节点主要引用pOpsPaper的方法，可以达成材质迁移，背景迁移，融合，语义增强功能，以及这四种功能的组合，每次调用embedding节点，都会在output目录生成该次工作流创建的embedding文件，你可以在下次使用中，加载该embedding文件，从而达到树状组合的目的。  
+--本节点主要引用pOpsPaper的方法，可以达成材质迁移，背景迁移，融合，语义增强功能，以及这四种功能的组合，每次调用embedding节点，都会在output目录生成该次工作流创建的embedding文件，你可以在下次使用中，加载该embedding文件，从而达到树状组合的目的。   
+--采样方式分为unet，ipadapter，controlnet+ipadapter，mean 四种，其中ipadapter，controlnet+ipadapter调用SDXL社区模型（比较耗时），unet和mean 调用kandinsky模型。   
 
-This node mainly references the methods of pOpsPaper, which can achieve material migration, background migration, fusion, semantic enhancement functions, and a combination of these four functions. Each time the embedding node is called, the embedding file created in the output directory will be generated. You can load the embedding file in the next use to achieve the goal of tree structure combination.   
-
+---This node mainly references the methods of pOpsPaper, which can achieve material migration, background migration, fusion, semantic enhancement functions, and a combination of these four functions. Each time the embedding node is called, the embedding file created in the output directory will be generated. You can load the embedding file in the next use to achieve the goal of tree structure combination.   
+---The sampling methods are divided into four types: unet, ipadapter, controllnet+ipadapter, and mean. Among them, ipadapter, controllnet+ipadapter call the SDXL community model (which is relatively time-consuming), while unet and mean call the Kandinsky model.   
 
 1.Installation
 -----
