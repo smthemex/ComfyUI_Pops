@@ -2,7 +2,7 @@
 name = "comfyui_pops"
 description = "a node using pops in comfyUI"
 version = "1.0.0"
-license = "LICENSE"
+license = { file = "LICENSE" }
 dependencies = ["pyrallis"]
 
 [project.urls]
