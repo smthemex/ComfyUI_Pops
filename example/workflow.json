@@ -1,0 +1,430 @@
+{
+  "last_node_id": 9,
+  "last_link_id": 25,
+  "nodes": [
+    {
+      "id": 6,
+      "type": "Pops_Sampler",
+      "pos": [
+        1234,
+        262
+      ],
+      "size": {
+        "0": 326.8467712402344,
+        "1": 429.7924499511719
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 16
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 11
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 12
+        },
+        {
+          "name": "tokenizer",
+          "type": "MODEL",
+          "link": 15
+        },
+        {
+          "name": "image_a",
+          "type": "IMAGE",
+          "link": 23
+        },
+        {
+          "name": "image_b",
+          "type": "IMAGE",
+          "link": 25,
+          "slot_index": 5
+        },
+        {
+          "name": "embeds_a",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "embeds_a"
+          }
+        },
+        {
+          "name": "embeds_b",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "embeds_b"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive_emb",
+          "type": "CONDITIONING",
+          "links": [
+            18
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "ng_image_embeds",
+          "type": "CONDITIONING",
+          "links": [
+            19
+          ],
+          "shape": 3,
+          "slot_index": 1
+        },
+        {
+          "name": "img_emb_file",
+          "type": "STRING",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Pops_Sampler"
+      },
+      "widgets_values": [
+        "good",
+        false,
+        false,
+        1,
+        1713053998,
+        "randomize",
+        50,
+        768,
+        768,
+        false,
+        "",
+        ""
+      ]
+    },
+    {
+      "id": 9,
+      "type": "LoadImage",
+      "pos": [
+        839,
+        569
+      ],
+      "size": {
+        "0": 345.8467712402344,
+        "1": 314
+      },
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            25
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "u=3498925566,2454775461&fm=253&fmt=auto&app=138&f=JPEG.jpg",
+        "image"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "SaveImage",
+      "pos": [
+        1608,
+        553
+      ],
+      "size": {
+        "0": 356.2532653808594,
+        "1": 363.0325012207031
+      },
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 8
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        "ComfyUI"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "Pops_Decoder",
+      "pos": [
+        1635,
+        269
+      ],
+      "size": {
+        "0": 315,
+        "1": 218
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 20
+        },
+        {
+          "name": "positive_emb",
+          "type": "CONDITIONING",
+          "link": 18
+        },
+        {
+          "name": "negative_emb",
+          "type": "CONDITIONING",
+          "link": 19
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            8
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Pops_Decoder"
+      },
+      "widgets_values": [
+        1671436200,
+        "randomize",
+        25,
+        1,
+        768,
+        768
+      ]
+    },
+    {
+      "id": 8,
+      "type": "LoadImage",
+      "pos": [
+        467,
+        580
+      ],
+      "size": {
+        "0": 345.8467712402344,
+        "1": 314
+      },
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            23
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "123.png",
+        "image"
+      ]
+    },
+    {
+      "id": 7,
+      "type": "Pops_Repo_Loader",
+      "pos": [
+        853,
+        265
+      ],
+      "size": {
+        "0": 315,
+        "1": 238
+      },
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "links": [
+            16
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "links": [
+            11
+          ],
+          "shape": 3,
+          "slot_index": 1
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "links": [
+            12,
+            20
+          ],
+          "shape": 3,
+          "slot_index": 2
+        },
+        {
+          "name": "tokenizer",
+          "type": "MODEL",
+          "links": [
+            15
+          ],
+          "shape": 3,
+          "slot_index": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Pops_Repo_Loader"
+      },
+      "widgets_values": [
+        "none",
+        "kandinsky-community/kandinsky-2-2-prior",
+        "none",
+        "kandinsky-community/kandinsky-2-2-decoder",
+        "texturing_learned_prior.pth",
+        "Binary"
+      ]
+    }
+  ],
+  "links": [
+    [
+      8,
+      3,
+      0,
+      4,
+      0,
+      "IMAGE"
+    ],
+    [
+      11,
+      7,
+      1,
+      6,
+      1,
+      "CLIP"
+    ],
+    [
+      12,
+      7,
+      2,
+      6,
+      2,
+      "VAE"
+    ],
+    [
+      15,
+      7,
+      3,
+      6,
+      3,
+      "MODEL"
+    ],
+    [
+      16,
+      7,
+      0,
+      6,
+      0,
+      "MODEL"
+    ],
+    [
+      18,
+      6,
+      0,
+      3,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      19,
+      6,
+      1,
+      3,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      20,
+      7,
+      2,
+      3,
+      0,
+      "VAE"
+    ],
+    [
+      23,
+      8,
+      0,
+      6,
+      4,
+      "IMAGE"
+    ],
+    [
+      25,
+      9,
+      0,
+      6,
+      5,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.9090909090909091,
+      "offset": [
+        -344.56314496393924,
+        -43.05427359054972
+      ]
+    }
+  },
+  "version": 0.4
+}
